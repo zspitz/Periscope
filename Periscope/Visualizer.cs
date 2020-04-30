@@ -43,12 +43,12 @@ namespace Periscope {
             where TWindow : VisualizerWindowBase<TWindow, TConfig>, new()
             where TConfig : ConfigBase<TConfig>, new() {
 
-
         protected override void Show(IDialogVisualizerService windowService, IVisualizerObjectProvider objectProvider) {
             if (windowService == null) { throw new ArgumentNullException(nameof(windowService)); }
 
-            // TODO move this to an extension point -- an event, or an overridable protected method
-            PresentationTraceSources.DataBindingSource.Listeners.Add(new DebugTraceListener());
+            if (BindingErrorsAsException) {
+                PresentationTraceSources.DataBindingSource.Listeners.Add(new DebugTraceListener());
+            }
 
             var window = new TWindow();
             window.Initialize(objectProvider, GetInitialConfig());
@@ -56,5 +56,7 @@ namespace Periscope {
         }
 
         public abstract TConfig GetInitialConfig();
+
+        public bool BindingErrorsAsException { get; set; } = true;
     }
 }
