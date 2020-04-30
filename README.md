@@ -1,5 +1,7 @@
 # Periscope
 
+[![AppVeyor build status](https://img.shields.io/appveyor/ci/zspitz/periscope?style=flat&max-age=86400)](https://ci.appveyor.com/project/zspitz/periscope) [![NuGet status](https://img.shields.io/nuget/v/periscope.svg?style=flat&max-age=86400)](https://www.nuget.org/packages/ZSpitz.Util/) [![NuGet Debuggee package status](https://img.shields.io/nuget/v/periscope.debuggee.svg?style=flat&max-age=86400)](https://www.nuget.org/packages/ZSpitz.Util.Wpf/) 
+
 > A **periscope** is an instrument for observation over, around or through an object, obstacle or condition that prevents direct line-of-sight observation from an observer's current position. ([Wikipedia](https://en.wikipedia.org/wiki/Periscope))
 
 Visual Studio provides an API that enables writing custom visualizers for specific types. The custom visualizer can focus on a specific object which exists in the debuggee side, and bring certain parts into better focus on the debugger side.
