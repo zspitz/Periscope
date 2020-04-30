@@ -9,4 +9,21 @@
         <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     </PropertyGroup>
 
+  <!-- Package properties -->
+  <PropertyGroup>
+    <Authors>Zev Spitz</Authors>
+    <Company />
+    <Product>Periscope.Debuggee</Product>
+    <Description>Debuggee-side components for Periscope, a framework for Visual Studio custom debugging visualizers</Description>
+    <Copyright>Copyright (c) 2020 Zev Spitz</Copyright>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageProjectUrl>https://github.com/zspitz/Periscope</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/zspitz/Periscope</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageTags>.net csharp visualizer visual-studio</PackageTags>
+    <PackageReleaseNotes>Initial release</PackageReleaseNotes>
+    <Version>0.1.0</Version>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+  </PropertyGroup>
+
 </Project>
