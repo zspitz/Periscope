@@ -14,3 +14,13 @@ with the following planned features:
 
 * Persistence of window state between debug sessions
 * Update notification
+* Access to more detail about the current source-code debugging environment, such as the [source expression](https://stackoverflow.com/questions/54749716/visualized-expression-in-custom-data-visualizer) or the [language of the source file](https://stackoverflow.com/questions/55954016/detect-source-language-at-runtime-from-within-debugging-visualizer).
+
+This framework will be used in the following visualizers:
+
+| Visualizer | targets | status | Periscope usage |
+| --- | --- | --- | --- |
+| [Expression Tree Visualizer](https://github.com/zspitz/ExpressionTreeVisualizer) | Expression trees etc. | Available | In progress |
+| [ANTLR Parse Tree Visualizer](https://github.com/zspitz/ANTLR4ParseTreeVisualizer) | ANTLR parse trees | Available | Pending |
+| Type hierarchy visualizer | `System.Type` | Planned | Pending |
+| Roslyn Syntax Node visualizer | Roslyn syntax nodes | Planned | Pending |
