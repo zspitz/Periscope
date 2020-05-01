@@ -2,13 +2,9 @@
 using System.Windows.Input;
 
 namespace _demoVisualizer {
-    /// <summary>
-    /// Interaction logic for VisualizerWindow.xaml
-    /// </summary>
     public partial class VisualizerWindow : VisualizerWindowBase {
-        public VisualizerWindow() {
-            InitializeComponent();
-        }
+        public VisualizerWindow() => InitializeComponent();
+
         protected override (ViewState<Config> window, ViewState<Config> settings) GetViewStates(object response, ICommand? OpenInNewWindow) {
             var receivedConfig = (Config)response;
             var windowState = new ViewState<Config>(
