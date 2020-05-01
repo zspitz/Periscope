@@ -7,7 +7,7 @@
             <Hyperlink Name="optionsLink">
                 <TextBlock Text="Settings" />
                 <Popup Name="optionsPopup" AllowsTransparency="True" Placement="Custom" PlacementTarget="{Binding ElementName=optionsAnchor}" StaysOpen="False">
-                    <Border Background="White" BorderBrush="Black" BorderThickness="0" Name="optionsBorder" Padding="12" />
+                    <Border Background="White" BorderBrush="Black" BorderThickness="1" Name="optionsBorder" Padding="12" />
                 </Popup>
             </Hyperlink>
         </Label>
