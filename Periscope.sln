@@ -7,6 +7,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Periscope", "Periscope\Peri
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Periscope.Debuggee", "Periscope.Debuggee\Periscope.Debuggee.csproj", "{402AD725-6873-4711-AC41-F4AF29011E7E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "_demoVisualizer", "_demoVisualizer\_demoVisualizer.csproj", "{FDCDCEFD-C573-4F7D-894C-EAFAAFDDB5A0}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{402AD725-6873-4711-AC41-F4AF29011E7E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{402AD725-6873-4711-AC41-F4AF29011E7E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{402AD725-6873-4711-AC41-F4AF29011E7E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FDCDCEFD-C573-4F7D-894C-EAFAAFDDB5A0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FDCDCEFD-C573-4F7D-894C-EAFAAFDDB5A0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FDCDCEFD-C573-4F7D-894C-EAFAAFDDB5A0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FDCDCEFD-C573-4F7D-894C-EAFAAFDDB5A0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
