@@ -19,7 +19,7 @@ namespace Periscope {
             Clipboard.SetText(string.Format(formatString, rootExpression));
         });
 
-        public static Visualizer? Current;
+        public static Visualizer Current;
 
         static Visualizer() => Current = new Visualizer();
 
@@ -39,15 +39,20 @@ namespace Periscope {
 
         public event PropertyChangedEventHandler? PropertyChanged;
 
-        public string Version { get; } 
-        public string Location { get; }
-        public string Filename { get; }
-
-        public Visualizer() {
-            var asm = GetType().Assembly;
-            Version = asm.GetName().Version.ToString();
-            Location = asm.Location;
-            Filename = GetFileName(Location);
+        private string? version;
+        public string? Version {
+            get => version;
+            internal set => this.NotifyChanged(ref version, value, PropertyChanged);
+        }
+        private string? location;
+        public string? Location {
+            get => location;
+            internal set => this.NotifyChanged(ref location, value, PropertyChanged);
+        }
+        private string? filename;
+        public string? Filename {
+            get => filename;
+            internal set => this.NotifyChanged(ref filename, value, PropertyChanged);
         }
     }
 
@@ -70,5 +75,12 @@ namespace Periscope {
         public abstract TConfig GetInitialConfig();
 
         public bool BindingErrorsAsException { get; set; } = true;
+
+        public VisualizerBase() {
+            var asm = GetType().Assembly;
+            Visualizer.Current.Version = asm.GetName().Version.ToString();
+            Visualizer.Current.Location = asm.Location;
+            Visualizer.Current.Filename = GetFileName(asm.Location);
+        }
     }
 }
