@@ -7,7 +7,18 @@
             <Hyperlink Name="optionsLink">
                 <TextBlock Text="Settings" />
                 <Popup Name="optionsPopup" AllowsTransparency="True" Placement="Custom" PlacementTarget="{Binding ElementName=optionsAnchor}" StaysOpen="False">
-                    <Border Background="White" BorderBrush="Black" BorderThickness="1" Name="optionsBorder" Padding="12" />
+                    <DockPanel>
+                        <StatusBar DockPanel.Dock="Bottom">
+                            <StatusBarItem>
+                                <TextBlock Text="{Binding Version, Source={x:Static ps:Visualizer.Current}}" />
+                            </StatusBarItem>
+                            <StatusBarItem>
+                                <TextBlock Text="{Binding FileName, Source={x:Static ps:Visualizer.Current}}" />
+                            </StatusBarItem>
+                        </StatusBar>
+                        <Border Background="White" BorderBrush="Black" BorderThickness="1" Name="optionsBorder" Padding="12" />
+                    </DockPanel>
+                    
                 </Popup>
             </Hyperlink>
         </Label>

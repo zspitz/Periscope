@@ -17,7 +17,7 @@
     <Description>Debuggee-side components for Periscope, a framework for Visual Studio custom debugging visualizers</Description>
     <Copyright>Copyright (c) 2020 Zev Spitz</Copyright>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <PackageProjectUrl>https://github.com/zspitz/Periscope</PackageProjectUrl>
+    <PackageProjectUrl>https://github.com/zspitz/Periscope/wiki</PackageProjectUrl>
     <RepositoryUrl>https://github.com/zspitz/Periscope</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <PackageTags>.net csharp visualizer visual-studio</PackageTags>

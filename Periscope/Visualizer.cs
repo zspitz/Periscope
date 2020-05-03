@@ -6,6 +6,7 @@ using ZSpitz.Util.Wpf;
 using System.Windows;
 using System.Diagnostics;
 using Periscope.Debuggee;
+using static System.IO.Path;
 
 namespace Periscope {
     public class Visualizer : INotifyPropertyChanged {
@@ -19,6 +20,8 @@ namespace Periscope {
         });
 
         public static Visualizer? Current;
+
+        static Visualizer() => Current = new Visualizer();
 
         private string? rootExpression;
 
@@ -36,7 +39,16 @@ namespace Periscope {
 
         public event PropertyChangedEventHandler? PropertyChanged;
 
-        static Visualizer() => Current = new Visualizer();
+        public string Version { get; } 
+        public string Location { get; }
+        public string Filename { get; }
+
+        public Visualizer() {
+            var asm = GetType().Assembly;
+            Version = asm.GetName().Version.ToString();
+            Location = asm.Location;
+            Filename = GetFileName(Location);
+        }
     }
 
     public abstract class VisualizerBase<TWindow, TConfig> : DialogDebuggerVisualizer 

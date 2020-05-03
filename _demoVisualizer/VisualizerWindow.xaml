@@ -9,7 +9,7 @@
         <TextBlock>Window number:</TextBlock>
         <TextBlock Text="{Binding WindowNumber}" />
         <Button Command="{Binding OpenInNewWindow}" Grid.ColumnSpan="2">Open next number in new window</Button>
-        <Button Command="{Binding CopyWatchExpression}" CommandParameter="{Binding FormatString}" Grid.ColumnSpan="2">Copy watch expression</Button>
+        <Button Command="{Binding CopyWatchExpression}" CommandParameter="{Binding WatchExpressionFormatString}" Grid.ColumnSpan="2">Copy watch expression</Button>
     </util:AutoGrid>
     
     <local:VisualizerWindowBase.OptionsPopup>

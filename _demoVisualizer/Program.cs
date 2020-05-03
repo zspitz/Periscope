@@ -9,8 +9,8 @@ namespace _demoVisualizer {
     class Program {
         [STAThread]
         static void Main(string[] args) {
-            int i = 0;
-            var visualizerHost = new VisualizerDevelopmentHost(i, typeof(Visualizer), typeof(DebuggeeObjectSource));
+            int aNumber = 29;
+            var visualizerHost = new VisualizerDevelopmentHost(aNumber, typeof(Visualizer), typeof(DebuggeeObjectSource));
             visualizerHost.ShowVisualizer();
 
         }
