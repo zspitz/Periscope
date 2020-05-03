@@ -13,7 +13,7 @@
                                 <TextBlock Text="{Binding Version, Source={x:Static ps:Visualizer.Current}}" />
                             </StatusBarItem>
                             <StatusBarItem>
-                                <TextBlock Text="{Binding FileName, Source={x:Static ps:Visualizer.Current}}" />
+                                <TextBlock Text="{Binding Filename, Source={x:Static ps:Visualizer.Current}}" />
                             </StatusBarItem>
                         </StatusBar>
                         <Border Background="White" BorderBrush="Black" BorderThickness="1" Name="optionsBorder" Padding="12" />
