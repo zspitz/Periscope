@@ -14,7 +14,7 @@ This project provides a common framework for custom debugging visualizers for Vi
 
 with the following planned features:
 
-* Persistence of window state between debug sessions
+* Persistence of window state between debug sessions; assembly-specific
 * Update notification
 * Access to more detail about the current source-code debugging environment, such as the [source expression](https://stackoverflow.com/questions/54749716/visualized-expression-in-custom-data-visualizer) or the [language of the source file](https://stackoverflow.com/questions/55954016/detect-source-language-at-runtime-from-within-debugging-visualizer).
 
