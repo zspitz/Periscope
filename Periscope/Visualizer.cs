@@ -7,6 +7,8 @@ using System.Windows;
 using System.Diagnostics;
 using Periscope.Debuggee;
 using static System.IO.Path;
+using System.Linq;
+using System.Reflection;
 
 namespace Periscope {
     public class Visualizer : INotifyPropertyChanged {
@@ -42,17 +44,25 @@ namespace Periscope {
         private string? version;
         public string? Version {
             get => version;
-            internal set => this.NotifyChanged(ref version, value, PropertyChanged);
+            private set => this.NotifyChanged(ref version, value, PropertyChanged);
         }
         private string? location;
         public string? Location {
             get => location;
-            internal set => this.NotifyChanged(ref location, value, PropertyChanged);
+            private set => this.NotifyChanged(ref location, value, PropertyChanged);
         }
         private string? filename;
         public string? Filename {
             get => filename;
-            internal set => this.NotifyChanged(ref filename, value, PropertyChanged);
+            private set => this.NotifyChanged(ref filename, value, PropertyChanged);
+        }
+
+        public void LoadVersionLocationInfo(Type t) {
+            // This requires an externally passed type, otherwise it'll return the Periscope DLL info
+            var asm = t.Assembly;
+            Version = asm.GetName().Version.ToString();
+            Location = asm.Location;
+            Filename = GetFileName(asm.Location);
         }
     }
 
@@ -72,15 +82,14 @@ namespace Periscope {
             window.ShowDialog();
         }
 
-        public abstract TConfig GetInitialConfig();
+        public virtual TConfig GetInitialConfig() => ConfigProvider.Get<TConfig>();
 
         public bool BindingErrorsAsException { get; set; } = true;
 
         public VisualizerBase() {
-            var asm = GetType().Assembly;
-            Visualizer.Current.Version = asm.GetName().Version.ToString();
-            Visualizer.Current.Location = asm.Location;
-            Visualizer.Current.Filename = GetFileName(asm.Location);
+            var t = GetType();
+            Visualizer.Current.LoadVersionLocationInfo(t);
+            ConfigProvider.LoadConfigFolder(t);
         }
     }
 }

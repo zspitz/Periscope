@@ -10,7 +10,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Periscope" Version="0.0.11" />
+    <PackageReference Include="Periscope" Version="0.0.12" />
     <Reference Include="Microsoft.VisualStudio.DebuggerVisualizers">
       <HintPath>..\..\..\..\..\..\..\Program Files (x86)\Microsoft Visual Studio\2019\Community\Common7\IDE\PublicAssemblies\Microsoft.VisualStudio.DebuggerVisualizers.dll</HintPath>
     </Reference>
