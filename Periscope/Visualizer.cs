@@ -7,8 +7,6 @@ using System.Windows;
 using System.Diagnostics;
 using Periscope.Debuggee;
 using static System.IO.Path;
-using System.Linq;
-using System.Reflection;
 
 namespace Periscope {
     public class Visualizer : INotifyPropertyChanged {
@@ -78,11 +76,11 @@ namespace Periscope {
             }
 
             var window = new TWindow();
-            window.Initialize(objectProvider, GetInitialConfig());
+            window.Initialize(objectProvider, ConfigProvider.Get<TConfig>(objectProvider.GetObject() as string ?? ""));
             window.ShowDialog();
         }
 
-        public virtual TConfig GetInitialConfig() => ConfigProvider.Get<TConfig>();
+        public virtual string ConfigKey(object o) => "";
 
         public bool BindingErrorsAsException { get; set; } = true;
 

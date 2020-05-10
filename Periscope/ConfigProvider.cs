@@ -8,6 +8,7 @@ using System.Linq;
 using ZSpitz.Util;
 using static System.IO.Path;
 using static System.Environment;
+using Newtonsoft.Json;
 
 namespace Periscope {
     public static class ConfigProvider {
@@ -16,12 +17,13 @@ namespace Periscope {
             var description = t.Assembly.GetAttributes<DebuggerVisualizerAttribute>(false).Select(x => x.Description).Distinct().Single();
             ConfigFolder = Combine(
                 GetFolderPath(SpecialFolder.LocalApplicationData),
-                description
+                description.Replace(" ", "")
             );
         }
 
-        private static bool TryReadFile(string key, [NotNullWhen(true)] out JObject? data) {
+        private static bool TryReadParseFile(string key, [NotNullWhen(true)] out JObject? data) {
             data = null;
+
             var path = Combine(
                 ConfigFolder,
                 $"{key}.json"
@@ -34,8 +36,10 @@ namespace Periscope {
             } catch { }
             if (fileText.IsNullOrWhitespace()) { return false; }
 
-            data = JObject.Parse(fileText);
-            return true;
+            try {
+                data = JObject.Parse(fileText);
+            } catch { }
+            return !(data is null);
         }
 
         // config data is stored in two files: global config (".json"), and keyed files
@@ -47,7 +51,7 @@ namespace Periscope {
             var ret = new JObject();
 
             if (Directory.Exists(ConfigFolder)) {
-                if (TryReadFile("", out var globalConfig)) {
+                if (TryReadParseFile("", out var globalConfig)) {
                     if (globalConfig.TryGetValue("globals", out var globals)) {
                         ret.Merge(globals);
                     }
@@ -56,12 +60,49 @@ namespace Periscope {
                     }
                 }
 
-                if (!key.IsNullOrWhitespace() && TryReadFile(key, out var keyedConfig)) {
+                if (!key.IsNullOrWhitespace() && TryReadParseFile(key, out var keyedConfig)) {
                     ret.Merge(keyedConfig);
                 }
             }
 
             return ret.ToObject<TConfig>()!;
+        }
+
+        public static void Write<TConfig>(TConfig config, string key = "") where TConfig : ConfigBase<TConfig> {
+            if (!Directory.Exists(ConfigFolder)) {
+                try {
+                    Directory.CreateDirectory(ConfigFolder);
+                } catch {
+                    // we can't create the directory, so we can't write the configuration
+                    return;
+                }
+            }
+
+            var settings = new JsonSerializerSettings {
+                Formatting = Formatting.Indented,
+                ContractResolver = new ConfigContractResolver(false)
+            };
+            var serializer = JsonSerializer.CreateDefault(settings);
+            var globals = JObject.FromObject(config, serializer);
+
+            // https://github.com/JamesNK/Newtonsoft.Json/issues/2155
+            // it seems that the contract resolver can't be modified after it's been passed in
+            settings.ContractResolver = new ConfigContractResolver(true);
+            serializer = JsonSerializer.CreateDefault(settings);
+            var keyed = JObject.FromObject(config, serializer);
+
+            var final = new JObject();
+            final["globals"] = globals;
+            final["lastKeyed"] = keyed;
+            try {
+                File.WriteAllText(Combine(ConfigFolder, ".json"), final.ToString());
+            } catch {}
+
+            if (keyed.Children().Any() && key != "") {
+                try {
+                    File.WriteAllText(Combine(ConfigFolder, key), keyed.ToString());
+                } catch { }
+            }
         }
     }
 }
