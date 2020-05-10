@@ -8,5 +8,4 @@ namespace Periscope.Debuggee {
         public abstract TConfig Clone();
         public abstract bool NeedsTransferData(TConfig original);
     }
-    // TODO can we add VisualizerObjectDataSource to this project somehow?
 }

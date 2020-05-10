@@ -39,10 +39,12 @@ namespace Periscope {
             }
 
             var (windowState, settingsState) = GetViewStates(response, openInNewWindow);
-            config =(TConfig)windowState.Config;
-            settingsConfig = ((TConfig)settingsState.Config) ?? config.Clone();
+            config = windowState.Config;
+            settingsConfig = settingsState.Config ?? config.Clone();
             chrome.optionsPopup.DataContext = settingsState.DataContext;
             DataContext = windowState.DataContext;
+
+            ConfigProvider.Write<TConfig>(config, Visualizer.ConfigKey);
         }
 
         protected abstract (ViewState<TConfig> window, ViewState<TConfig> settings) GetViewStates(object response, ICommand? OpenInNewWindow);

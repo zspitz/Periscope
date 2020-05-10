@@ -55,6 +55,8 @@ namespace Periscope {
             private set => this.NotifyChanged(ref filename, value, PropertyChanged);
         }
 
+        public static string ConfigKey { get; set; } = "";
+
         public void LoadVersionLocationInfo(Type t) {
             // This requires an externally passed type, otherwise it'll return the Periscope DLL info
             var asm = t.Assembly;
@@ -75,8 +77,10 @@ namespace Periscope {
                 PresentationTraceSources.DataBindingSource.Listeners.Add(new DebugTraceListener());
             }
 
+            Visualizer.ConfigKey = objectProvider.GetObject() as string ?? "";
+
             var window = new TWindow();
-            window.Initialize(objectProvider, ConfigProvider.Get<TConfig>(objectProvider.GetObject() as string ?? ""));
+            window.Initialize(objectProvider, ConfigProvider.Get<TConfig>(Visualizer.ConfigKey));
             window.ShowDialog();
         }
 
