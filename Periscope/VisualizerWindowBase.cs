@@ -117,6 +117,11 @@ namespace Periscope {
                         Initialize(objectProvider, settingsConfig);
                     }
                 };
+
+                Unloaded += (s, e) => {
+                    if (config is null) { return; }
+                    ConfigProvider.Write(config, Visualizer.ConfigKey);
+                };
             };
         }
     }
