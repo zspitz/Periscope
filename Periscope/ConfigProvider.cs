@@ -91,9 +91,10 @@ namespace Periscope {
             serializer = JsonSerializer.CreateDefault(settings);
             var keyed = JObject.FromObject(config, serializer);
 
-            var final = new JObject();
-            final["globals"] = globals;
-            final["lastKeyed"] = keyed;
+            var final = new JObject {
+                ["globals"] = globals,
+                ["lastKeyed"] = keyed
+            };
             try {
                 File.WriteAllText(Combine(ConfigFolder, ".json"), final.ToString());
             } catch {}
