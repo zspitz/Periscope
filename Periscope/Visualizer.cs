@@ -68,7 +68,7 @@ namespace Periscope {
 
     public abstract class VisualizerBase<TWindow, TConfig> : DialogDebuggerVisualizer 
             where TWindow : VisualizerWindowBase<TWindow, TConfig>, new()
-            where TConfig : ConfigBase<TConfig>, new() {
+            where TConfig : ConfigBase<TConfig> {
 
         protected override void Show(IDialogVisualizerService windowService, IVisualizerObjectProvider objectProvider) {
             if (windowService == null) { throw new ArgumentNullException(nameof(windowService)); }

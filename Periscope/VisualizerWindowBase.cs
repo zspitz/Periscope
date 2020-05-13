@@ -12,7 +12,7 @@ namespace Periscope {
     [ContentProperty("MainContent")]
     public abstract class VisualizerWindowBase<TWindow, TConfig> : Window 
             where TWindow : VisualizerWindowBase<TWindow, TConfig>, new()
-            where TConfig : ConfigBase<TConfig>, new() {
+            where TConfig : ConfigBase<TConfig> {
 
         private readonly VisualizerWindowChrome chrome; 
 
@@ -44,7 +44,7 @@ namespace Periscope {
             chrome.optionsPopup.DataContext = settingsState.DataContext;
             DataContext = windowState.DataContext;
 
-            ConfigProvider.Write<TConfig>(config, Visualizer.ConfigKey);
+            ConfigProvider.Write(config, Visualizer.ConfigKey);
         }
 
         protected abstract (ViewState<TConfig> window, ViewState<TConfig> settings) GetViewStates(object response, ICommand? OpenInNewWindow);
