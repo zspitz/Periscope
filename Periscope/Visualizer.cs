@@ -7,6 +7,7 @@ using System.Windows;
 using System.Diagnostics;
 using Periscope.Debuggee;
 using static System.IO.Path;
+using System.Linq;
 
 namespace Periscope {
     public class Visualizer : INotifyPropertyChanged {
@@ -69,45 +70,22 @@ namespace Periscope {
                 where TWindow : VisualizerWindowBase<TWindow, TConfig>, new()
                 where TConfig : ConfigBase<TConfig> {
 
-            Visualizer.Current.LoadVersionLocationInfo(referenceType);
-            ConfigProvider.LoadConfigFolder(referenceType);
+            Current.LoadVersionLocationInfo(referenceType);
+            var description = referenceType.Assembly
+                .GetCustomAttributes(typeof(DebuggerVisualizerAttribute), false)
+                .Cast<DebuggerVisualizerAttribute>()
+                .Select(x => x.Description)
+                .Distinct()
+                .Single();
+            ConfigProvider.LoadConfigFolder(description);
 
             PresentationTraceSources.DataBindingSource.Listeners.Add(new DebugTraceListener());
 
-            Visualizer.ConfigKey = objectProvider.GetObject() as string ?? "";
+            ConfigKey = objectProvider.GetObject() as string ?? "";
 
             var window = new TWindow();
             window.Initialize(objectProvider, ConfigProvider.Get<TConfig>(ConfigKey));
             window.ShowDialog();
         }
     }
-
-    //public abstract class VisualizerBase<TWindow, TConfig> : DialogDebuggerVisualizer 
-    //        where TWindow : VisualizerWindowBase<TWindow, TConfig>, new()
-    //        where TConfig : ConfigBase<TConfig> {
-
-    //    protected override void Show(IDialogVisualizerService windowService, IVisualizerObjectProvider objectProvider) {
-    //        if (windowService == null) { throw new ArgumentNullException(nameof(windowService)); }
-
-    //        if (BindingErrorsAsException) {
-    //            PresentationTraceSources.DataBindingSource.Listeners.Add(new DebugTraceListener());
-    //        }
-
-    //        Visualizer.ConfigKey = objectProvider.GetObject() as string ?? "";
-
-    //        var window = new TWindow();
-    //        window.Initialize(objectProvider, ConfigProvider.Get<TConfig>(Visualizer.ConfigKey));
-    //        window.ShowDialog();
-    //    }
-
-    //    public virtual string ConfigKey(object o) => "";
-
-    //    public bool BindingErrorsAsException { get; set; } = true;
-
-    //    public VisualizerBase() {
-    //        var t = GetType();
-    //        Visualizer.Current.LoadVersionLocationInfo(t);
-    //        ConfigProvider.LoadConfigFolder(t);
-    //    }
-    //}
 }

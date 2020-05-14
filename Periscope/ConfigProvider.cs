@@ -14,10 +14,17 @@ namespace Periscope {
     public static class ConfigProvider {
         public static string? ConfigFolder { get; private set; }
         public static void LoadConfigFolder(Type t) {
-            var description = t.Assembly.GetAttributes<DebuggerVisualizerAttribute>(false).Select(x => x.Description).Distinct().Single();
+            var description = 
+                t.Assembly.GetAttributes<DebuggerVisualizerAttribute>(false)
+                    .Select(x => x.Description)
+                    .Distinct()
+                    .Single();
+            LoadConfigFolder(description);
+        }
+        public static void LoadConfigFolder(string subfolderName) {
             ConfigFolder = Combine(
                 GetFolderPath(SpecialFolder.LocalApplicationData),
-                description.Replace(" ", "")
+                subfolderName.Replace(" ", "")
             );
         }
 
