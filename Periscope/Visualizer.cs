@@ -64,34 +64,50 @@ namespace Periscope {
             Location = asm.Location;
             Filename = GetFileName(asm.Location);
         }
-    }
 
-    public abstract class VisualizerBase<TWindow, TConfig> : DialogDebuggerVisualizer 
-            where TWindow : VisualizerWindowBase<TWindow, TConfig>, new()
-            where TConfig : ConfigBase<TConfig> {
+        public static void Show<TWindow, TConfig>(Type referenceType, IVisualizerObjectProvider objectProvider)
+                where TWindow : VisualizerWindowBase<TWindow, TConfig>, new()
+                where TConfig : ConfigBase<TConfig> {
 
-        protected override void Show(IDialogVisualizerService windowService, IVisualizerObjectProvider objectProvider) {
-            if (windowService == null) { throw new ArgumentNullException(nameof(windowService)); }
+            Visualizer.Current.LoadVersionLocationInfo(referenceType);
+            ConfigProvider.LoadConfigFolder(referenceType);
 
-            if (BindingErrorsAsException) {
-                PresentationTraceSources.DataBindingSource.Listeners.Add(new DebugTraceListener());
-            }
+            PresentationTraceSources.DataBindingSource.Listeners.Add(new DebugTraceListener());
 
             Visualizer.ConfigKey = objectProvider.GetObject() as string ?? "";
 
             var window = new TWindow();
-            window.Initialize(objectProvider, ConfigProvider.Get<TConfig>(Visualizer.ConfigKey));
+            window.Initialize(objectProvider, ConfigProvider.Get<TConfig>(ConfigKey));
             window.ShowDialog();
         }
-
-        public virtual string ConfigKey(object o) => "";
-
-        public bool BindingErrorsAsException { get; set; } = true;
-
-        public VisualizerBase() {
-            var t = GetType();
-            Visualizer.Current.LoadVersionLocationInfo(t);
-            ConfigProvider.LoadConfigFolder(t);
-        }
     }
+
+    //public abstract class VisualizerBase<TWindow, TConfig> : DialogDebuggerVisualizer 
+    //        where TWindow : VisualizerWindowBase<TWindow, TConfig>, new()
+    //        where TConfig : ConfigBase<TConfig> {
+
+    //    protected override void Show(IDialogVisualizerService windowService, IVisualizerObjectProvider objectProvider) {
+    //        if (windowService == null) { throw new ArgumentNullException(nameof(windowService)); }
+
+    //        if (BindingErrorsAsException) {
+    //            PresentationTraceSources.DataBindingSource.Listeners.Add(new DebugTraceListener());
+    //        }
+
+    //        Visualizer.ConfigKey = objectProvider.GetObject() as string ?? "";
+
+    //        var window = new TWindow();
+    //        window.Initialize(objectProvider, ConfigProvider.Get<TConfig>(Visualizer.ConfigKey));
+    //        window.ShowDialog();
+    //    }
+
+    //    public virtual string ConfigKey(object o) => "";
+
+    //    public bool BindingErrorsAsException { get; set; } = true;
+
+    //    public VisualizerBase() {
+    //        var t = GetType();
+    //        Visualizer.Current.LoadVersionLocationInfo(t);
+    //        ConfigProvider.LoadConfigFolder(t);
+    //    }
+    //}
 }

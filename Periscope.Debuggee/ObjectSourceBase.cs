@@ -2,17 +2,17 @@
 using System.IO;
 
 namespace Periscope.Debuggee {
-    public abstract class ObjectSourceBase<TConfig> : VisualizerObjectSource where TConfig : ConfigBase<TConfig> {
-        public virtual string ConfigKey => "";
-        public abstract object GetSerializationModel(object target, TConfig config);
+    //public abstract class ObjectSourceBase<TConfig> : VisualizerObjectSource where TConfig : ConfigBase<TConfig> {
+    //    public virtual string ConfigKey => "";
+    //    public abstract object GetSerializationModel(object target, TConfig config);
 
-        public override void GetData(object target, Stream outgoingData) =>
-            Serialize(outgoingData, ConfigKey);
+    //    public override void GetData(object target, Stream outgoingData) =>
+    //        Serialize(outgoingData, ConfigKey);
 
-        public override void TransferData(object target, Stream incomingData, Stream outgoingData) {
-            var config = (TConfig)Deserialize(incomingData);
-            var serializationModel = GetSerializationModel(target, config);
-            Serialize(outgoingData, serializationModel);
-        }
-    }
+    //    public override void TransferData(object target, Stream incomingData, Stream outgoingData) {
+    //        var config = (TConfig)Deserialize(incomingData);
+    //        var serializationModel = GetSerializationModel(target, config);
+    //        Serialize(outgoingData, serializationModel);
+    //    }
+    //}
 }
