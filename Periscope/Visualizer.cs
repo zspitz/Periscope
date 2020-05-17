@@ -58,6 +58,8 @@ namespace Periscope {
 
         public static string ConfigKey { get; set; } = "";
 
+        public string? FeedbackUrl { get; set; }
+
         public void LoadVersionLocationInfo(Type t) {
             // This requires an externally passed type, otherwise it'll return the Periscope DLL info
             var asm = t.Assembly;
@@ -71,13 +73,7 @@ namespace Periscope {
                 where TConfig : ConfigBase<TConfig> {
 
             Current.LoadVersionLocationInfo(referenceType);
-            var description = referenceType.Assembly
-                .GetCustomAttributes(typeof(DebuggerVisualizerAttribute), false)
-                .Cast<DebuggerVisualizerAttribute>()
-                .Select(x => x.Description)
-                .Distinct()
-                .Single();
-            ConfigProvider.LoadConfigFolder(description);
+            ConfigProvider.LoadConfigFolder(referenceType);
 
             PresentationTraceSources.DataBindingSource.Listeners.Add(new DebugTraceListener());
 
