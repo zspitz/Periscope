@@ -8,6 +8,7 @@ using System.Diagnostics;
 using Periscope.Debuggee;
 using static System.IO.Path;
 using System.Linq;
+using System.Runtime.CompilerServices;
 
 namespace Periscope {
     public class Visualizer : INotifyPropertyChanged {
@@ -68,9 +69,11 @@ namespace Periscope {
             Filename = GetFileName(asm.Location);
         }
 
-        public static void Show<TWindow, TConfig>(Type referenceType, IVisualizerObjectProvider objectProvider)
+        public static void Show<TWindow, TConfig>(Type referenceType, IVisualizerObjectProvider objectProvider, string? feedbackUrl)
                 where TWindow : VisualizerWindowBase<TWindow, TConfig>, new()
                 where TConfig : ConfigBase<TConfig> {
+
+            Current.FeedbackUrl = feedbackUrl;
 
             Current.LoadVersionLocationInfo(referenceType);
             ConfigProvider.LoadConfigFolder(referenceType);
