@@ -29,7 +29,7 @@
                                 </util:Hyperlink>
                             </StatusBarItem>
                             <StatusBarItem Visibility="{Binding FeedbackUrl, Converter={StaticResource NotNullToVisibilityConverter}}">
-                                <util:Hyperlink NavigateUri="{Binding FeedbackUrl}">Feedback</util:Hyperlink>
+                                <util:Hyperlink NavigateUri="{Binding FeedbackUrl, TargetNullValue=''}">Feedback</util:Hyperlink>
                             </StatusBarItem>
                         </StatusBar>
                         <Border Background="White" BorderBrush="Black" BorderThickness="1" Name="optionsBorder" Padding="12" />
