@@ -15,15 +15,18 @@
                 <Popup Name="optionsPopup" AllowsTransparency="True" Placement="Custom" PlacementTarget="{Binding ElementName=optionsAnchor}" StaysOpen="False">
                     <DockPanel>
                         <StatusBar DockPanel.Dock="Bottom" DataContext="{Binding Source={x:Static ps:Visualizer.Current}}">
+                            <StatusBar.Resources>
+                                <Style TargetType="StatusBarItem">
+                                    <Setter Property="Margin" Value="3,0,3,0" />
+                                </Style>
+                            </StatusBar.Resources>
                             <StatusBarItem>
                                 <TextBlock Text="{Binding Version}" />
                             </StatusBarItem>
                             <StatusBarItem>
-                                <TextBlock Text="{Binding Filename}">
-                                    <TextBlock.ToolTip>
-                                        <TextBlock Text="{Binding Location}"/>
-                                    </TextBlock.ToolTip>
-                                </TextBlock>
+                                <util:Hyperlink NavigateUri="{Binding Location}" CommandParameter="{Binding UrlArgs}">
+                                    <TextBlock Text="{Binding Filename}" />
+                                </util:Hyperlink>
                             </StatusBarItem>
                             <StatusBarItem Visibility="{Binding FeedbackUrl, Converter={StaticResource NotNullToVisibilityConverter}}">
                                 <util:Hyperlink NavigateUri="{Binding FeedbackUrl}">Feedback</util:Hyperlink>

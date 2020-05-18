@@ -57,6 +57,8 @@ namespace Periscope {
             private set => this.NotifyChanged(ref filename, value, PropertyChanged);
         }
 
+        public (string url, string args) UrlArgs => ("explorer.exe", $"/n /e,/select,\"{location}\"");
+
         public static string ConfigKey { get; set; } = "";
 
         private string? feedbackUrl;
