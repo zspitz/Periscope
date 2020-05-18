@@ -62,9 +62,12 @@ namespace Periscope {
         public static string ConfigKey { get; set; } = "";
 
         private string? feedbackUrl;
-        public string? FeedbackUrl { 
+        public string? FeedbackUrl {
             get => feedbackUrl;
-            set => this.NotifyChanged(ref feedbackUrl, value, PropertyChanged);
+            set {
+                if (value.IsNullOrWhitespace()) { value = null; }
+                this.NotifyChanged(ref feedbackUrl, value, PropertyChanged);
+            }
         }
 
         public void LoadVersionLocationInfo(Type t) {
@@ -75,7 +78,7 @@ namespace Periscope {
             Filename = GetFileName(asm.Location);
         }
 
-        public static void Show<TWindow, TConfig>(Type referenceType, IVisualizerObjectProvider objectProvider, string? feedbackUrl)
+        public static void Show<TWindow, TConfig>(Type referenceType, IVisualizerObjectProvider objectProvider, string? feedbackUrl = null)
                 where TWindow : VisualizerWindowBase<TWindow, TConfig>, new()
                 where TConfig : ConfigBase<TConfig> {
 
