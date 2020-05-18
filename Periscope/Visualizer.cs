@@ -59,7 +59,11 @@ namespace Periscope {
 
         public static string ConfigKey { get; set; } = "";
 
-        public string? FeedbackUrl { get; set; }
+        private string? feedbackUrl;
+        public string? FeedbackUrl { 
+            get => feedbackUrl;
+            set => this.NotifyChanged(ref feedbackUrl, value, PropertyChanged);
+        }
 
         public void LoadVersionLocationInfo(Type t) {
             // This requires an externally passed type, otherwise it'll return the Periscope DLL info

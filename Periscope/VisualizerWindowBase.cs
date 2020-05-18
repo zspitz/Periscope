@@ -97,17 +97,6 @@ namespace Periscope {
             };
 
             Loaded += (s, e) => {
-                chrome.optionsLink.Click += (s, e) => chrome.optionsPopup.IsOpen = true;
-
-                // https://stackoverflow.com/a/21436273/111794
-                chrome.optionsPopup.CustomPopupPlacementCallback += (popupSize, targetSize, offset) => {
-                    return new[] {
-                        new CustomPopupPlacement() {
-                            Point = new Point(targetSize.Width - popupSize.Width, targetSize.Height)
-                        }
-                    };
-                };
-
                 chrome.optionsPopup.Closed += (s, e) => {
                     if (objectProvider is null) { throw new ArgumentNullException("Missing object provider"); }
                     if (config is null) { throw new ArgumentNullException("Missing config"); }
