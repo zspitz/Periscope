@@ -78,11 +78,13 @@ namespace Periscope {
             Filename = GetFileName(asm.Location);
         }
 
-        public static void Show<TWindow, TConfig>(Type referenceType, IVisualizerObjectProvider objectProvider, string? feedbackUrl = null)
+        public static void Show<TWindow, TConfig>(Type referenceType, IVisualizerObjectProvider objectProvider, IProjectInfo? projectInfo = default)
                 where TWindow : VisualizerWindowBase<TWindow, TConfig>, new()
                 where TConfig : ConfigBase<TConfig> {
 
-            Current.FeedbackUrl = feedbackUrl;
+            if (projectInfo is { }) {
+                Current.FeedbackUrl = projectInfo.FeedbackUrl;
+            }
 
             Current.LoadVersionLocationInfo(referenceType);
             ConfigProvider.LoadConfigFolder(referenceType);
