@@ -8,6 +8,6 @@ using System.Threading.Tasks;
 namespace Periscope {
     public interface IProjectInfo {
         public string FeedbackUrl { get; }
-        public Task<Version> GetLatestVersionAsync(CancellationToken cancellationToken = default);
+        public Task<Version?> GetLatestVersionAsync(CancellationToken cancellationToken = default);
     }
 }

@@ -57,6 +57,12 @@ namespace Periscope {
             private set => this.NotifyChanged(ref filename, value, PropertyChanged);
         }
 
+        private Version? latestVersion;
+        public Version? LatestVersion {
+            get => latestVersion;
+            set => this.NotifyChanged(ref latestVersion, value, PropertyChanged);
+        }
+
         public (string url, string args) UrlArgs => ("explorer.exe", $"/n /e,/select,\"{location}\"");
 
         public static string ConfigKey { get; set; } = "";
@@ -94,6 +100,9 @@ namespace Periscope {
             ConfigKey = objectProvider.GetObject() as string ?? "";
 
             var window = new TWindow();
+            if (projectInfo is { }) {
+                window.Loaded += async (s, e) => Current.LatestVersion = await projectInfo.GetLatestVersionAsync();
+            }
             window.Initialize(objectProvider, ConfigProvider.Get<TConfig>(ConfigKey));
             window.ShowDialog();
         }
