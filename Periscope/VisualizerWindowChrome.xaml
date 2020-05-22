@@ -11,6 +11,7 @@
         <s:Boolean x:Key="False">False</s:Boolean>
         <util:VisibilityConverter x:Key="NullVisibleConverter" MatchValue="{x:Null}" />
         <util:VisibilityConverter x:Key="FalseVisibleConverter" MatchValue="{StaticResource False}" />
+        <util:MultiVisibilityConverter x:Key="MultiVisibilityConverter" />
     </DockPanel.Resources>
 
     <DockPanel DockPanel.Dock="Bottom" Margin="0,12,0,0">
@@ -28,7 +29,7 @@
                             <TextBlock Text="{Binding VersionString}" />
                             <Button Content="New version check">
                                 <Button.Visibility>
-                                    <MultiBinding>
+                                    <MultiBinding Converter="{StaticResource MultiVisibilityConverter}">
                                         <Binding Path="UpdateCheck" Converter="{StaticResource NotNullVisibilityConverter}" />
                                         <Binding Path="IsLatest" Converter="{StaticResource NullVisibleConverter}" />
                                     </MultiBinding>
@@ -36,7 +37,7 @@
                             </Button>
                             <StatusBarItem>
                                 <StatusBarItem.Visibility>
-                                    <MultiBinding>
+                                    <MultiBinding Converter="{StaticResource MultiVisibilityConverter}">
                                         <Binding Path="UpdateCheck" Converter="{StaticResource NotNullVisibilityConverter}" />
                                         <Binding Path="IsLatest" Converter="{StaticResource FalseVisibleConverter}" />
                                     </MultiBinding>
