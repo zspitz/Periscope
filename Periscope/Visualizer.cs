@@ -104,6 +104,15 @@ namespace Periscope {
             }
         }
 
+        private string? releaseUrl;
+        public string? ReleaseUrl {
+            get => releaseUrl;
+            set {
+                if (value.IsNullOrWhitespace()) { value = null; }
+                NotifyChanged(ref releaseUrl, value);
+            }
+        }
+
         public RelayCommand? LatestVersionCheck { get; private set; }
 
         public bool? IsLatest => 
@@ -123,6 +132,7 @@ namespace Periscope {
 
             if (projectInfo is { }) {
                 FeedbackUrl = projectInfo.FeedbackUrl;
+                ReleaseUrl = projectInfo.ReleaseUrl;
                 LatestVersionCheck = new RelayCommand(async o =>
                     LatestVersion = await projectInfo.GetLatestVersionAsync()
                 );

@@ -4,7 +4,7 @@
         xmlns:ps="clr-namespace:Periscope"
         xmlns:util="clr-namespace:ZSpitz.Util.Wpf;assembly=ZSpitz.Util.Wpf"
         xmlns:s="clr-namespace:System;assembly=mscorlib">
-   
+
     <DockPanel.Resources>
         <util:VisibilityConverter x:Key="NotNullVisibilityConverter" MatchValue="{x:Null}" Invert="True" />
         <s:Boolean x:Key="True">True</s:Boolean>
@@ -27,25 +27,30 @@
                                 </Style>
                             </StatusBar.Resources>
                             <TextBlock Text="{Binding VersionString}" />
-                            <Button Content="New version check">
-                                <Button.Visibility>
-                                    <MultiBinding Converter="{StaticResource MultiVisibilityConverter}">
-                                        <Binding Path="UpdateCheck" Converter="{StaticResource NotNullVisibilityConverter}" />
-                                        <Binding Path="IsLatest" Converter="{StaticResource NullVisibleConverter}" />
-                                    </MultiBinding>
-                                </Button.Visibility>
-                            </Button>
                             <StatusBarItem>
                                 <StatusBarItem.Visibility>
                                     <MultiBinding Converter="{StaticResource MultiVisibilityConverter}">
-                                        <Binding Path="UpdateCheck" Converter="{StaticResource NotNullVisibilityConverter}" />
-                                        <Binding Path="IsLatest" Converter="{StaticResource FalseVisibleConverter}" />
+                                        <Binding Path="LatestVersionCheck" Converter="{StaticResource NotNullVisibilityConverter}" />
+                                        <Binding Path="IsLatest" Converter="{StaticResource NullVisibleConverter}" />
                                     </MultiBinding>
                                 </StatusBarItem.Visibility>
-                                <util:Hyperlink NavigateUri="{Binding Location}" CommandParameter="{Binding UrlArgs}">
-                                    <TextBlock Text="{Binding Filename}" />
+                                <Button Content="New version check" Command="{Binding LatestVersionCheck}" />
+                            </StatusBarItem>
+                            <StatusBarItem>
+                                <StatusBarItem.Visibility>
+                                    <MultiBinding Converter="{StaticResource MultiVisibilityConverter}">
+                                        <Binding Path="LatestVersionCheck" Converter="{StaticResource NotNullVisibilityConverter}" />
+                                        <Binding Path="IsLatest" Converter="{StaticResource FalseVisibleConverter}" />
+                                        <Binding Path="ReleaseUrl" Converter="{StaticResource NotNullVisibilityConverter}" />
+                                    </MultiBinding>
+                                </StatusBarItem.Visibility>
+                                <util:Hyperlink NavigateUri="{Binding ReleaseUrl, TargetNullValue=''}">
+                                    <TextBlock Text="{Binding LatestVersion, StringFormat=Latest {0}}" />
                                 </util:Hyperlink>
                             </StatusBarItem>
+                            <util:Hyperlink NavigateUri="{Binding Location}" CommandParameter="{Binding UrlArgs}">
+                                <TextBlock Text="{Binding Filename}" />
+                            </util:Hyperlink>
                             <StatusBarItem Visibility="{Binding FeedbackUrl, Converter={StaticResource NotNullVisibilityConverter}}">
                                 <util:Hyperlink NavigateUri="{Binding FeedbackUrl, TargetNullValue=''}">Feedback</util:Hyperlink>
                             </StatusBarItem>
