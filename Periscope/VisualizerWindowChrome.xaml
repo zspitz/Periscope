@@ -2,33 +2,50 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" 
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" 
         xmlns:ps="clr-namespace:Periscope"
-        xmlns:util="clr-namespace:ZSpitz.Util.Wpf;assembly=ZSpitz.Util.Wpf">
+        xmlns:util="clr-namespace:ZSpitz.Util.Wpf;assembly=ZSpitz.Util.Wpf"
+        xmlns:s="clr-namespace:System;assembly=mscorlib">
    
     <DockPanel.Resources>
-        <util:NotNullToVisibilityConverter x:Key="NotNullToVisibilityConverter" />
+        <util:VisibilityConverter x:Key="NotNullVisibilityConverter" MatchValue="{x:Null}" Invert="True" />
+        <s:Boolean x:Key="True">True</s:Boolean>
+        <s:Boolean x:Key="False">False</s:Boolean>
+        <util:VisibilityConverter x:Key="NullVisibleConverter" MatchValue="{x:Null}" />
+        <util:VisibilityConverter x:Key="FalseVisibleConverter" MatchValue="{StaticResource False}" />
     </DockPanel.Resources>
-    
+
     <DockPanel DockPanel.Dock="Bottom" Margin="0,12,0,0">
         <Label Name="optionsAnchor" DockPanel.Dock="Right" Margin="9,0,0,0">
             <Hyperlink Name="optionsLink">
                 <TextBlock Text="Settings" />
                 <Popup Name="optionsPopup" AllowsTransparency="True" Placement="Custom" PlacementTarget="{Binding ElementName=optionsAnchor}" StaysOpen="False">
                     <DockPanel>
-                        <StatusBar DockPanel.Dock="Bottom" DataContext="{Binding Source={x:Static ps:Visualizer.Current}}">
+                        <StatusBar DockPanel.Dock="Bottom" DataContext="{Binding Source={x:Static ps:Visualizer.Current}}" BorderBrush="Black" BorderThickness="1,0,1,1">
                             <StatusBar.Resources>
                                 <Style TargetType="StatusBarItem">
                                     <Setter Property="Margin" Value="3,0,3,0" />
                                 </Style>
                             </StatusBar.Resources>
+                            <TextBlock Text="{Binding VersionString}" />
+                            <Button Content="New version check">
+                                <Button.Visibility>
+                                    <MultiBinding>
+                                        <Binding Path="UpdateCheck" Converter="{StaticResource NotNullVisibilityConverter}" />
+                                        <Binding Path="IsLatest" Converter="{StaticResource NullVisibleConverter}" />
+                                    </MultiBinding>
+                                </Button.Visibility>
+                            </Button>
                             <StatusBarItem>
-                                <TextBlock Text="{Binding Version}" />
-                            </StatusBarItem>
-                            <StatusBarItem>
+                                <StatusBarItem.Visibility>
+                                    <MultiBinding>
+                                        <Binding Path="UpdateCheck" Converter="{StaticResource NotNullVisibilityConverter}" />
+                                        <Binding Path="IsLatest" Converter="{StaticResource FalseVisibleConverter}" />
+                                    </MultiBinding>
+                                </StatusBarItem.Visibility>
                                 <util:Hyperlink NavigateUri="{Binding Location}" CommandParameter="{Binding UrlArgs}">
                                     <TextBlock Text="{Binding Filename}" />
                                 </util:Hyperlink>
                             </StatusBarItem>
-                            <StatusBarItem Visibility="{Binding FeedbackUrl, Converter={StaticResource NotNullToVisibilityConverter}}">
+                            <StatusBarItem Visibility="{Binding FeedbackUrl, Converter={StaticResource NotNullVisibilityConverter}}">
                                 <util:Hyperlink NavigateUri="{Binding FeedbackUrl, TargetNullValue=''}">Feedback</util:Hyperlink>
                             </StatusBarItem>
                         </StatusBar>

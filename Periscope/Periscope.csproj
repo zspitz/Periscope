@@ -30,8 +30,8 @@
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
     <PackageReference Include="Octokit" Version="0.47.0" />
-    <PackageReference Include="ZSpitz.Util" Version="0.0.22" />
-    <PackageReference Include="ZSpitz.Util.Wpf" Version="0.0.22" />
+    <PackageReference Include="ZSpitz.Util" Version="0.0.26" />
+    <PackageReference Include="ZSpitz.Util.Wpf" Version="0.0.26" />
     <Reference Include="Microsoft.VisualStudio.DebuggerVisualizers">
       <HintPath>C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\Common7\IDE\PublicAssemblies\Microsoft.VisualStudio.DebuggerVisualizers.dll</HintPath>
       <Private>false</Private>
