@@ -12,10 +12,10 @@ This project provides a common framework for custom debugging visualizers for Vi
 * **CopyWatchExpression** command
 * Enables reuse of the same UI components outside of a visualizer
 * Persistence of window state between debug sessions; individual properties can be associated with generated key, such as the assembly name
+* Latest version checking
 
 with the following planned features:
 
-* Update notification
 * Access to more detail about the current source-code debugging environment, such as the [source expression](https://stackoverflow.com/questions/54749716/visualized-expression-in-custom-data-visualizer) or the [language of the source file](https://stackoverflow.com/questions/55954016/detect-source-language-at-runtime-from-within-debugging-visualizer).
 
 This framework will be used in the following visualizers:
