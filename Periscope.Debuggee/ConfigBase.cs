@@ -6,6 +6,6 @@ namespace Periscope.Debuggee {
     [Serializable]
     public abstract class ConfigBase<TConfig> where TConfig : ConfigBase<TConfig> {
         public abstract TConfig Clone();
-        public abstract bool NeedsTransferData(TConfig original);
+        public abstract ConfigDiffStates Diff(TConfig baseline);
     }
 }

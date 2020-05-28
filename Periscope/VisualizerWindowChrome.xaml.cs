@@ -6,17 +6,20 @@ namespace Periscope {
         public VisualizerWindowChrome() {
             InitializeComponent();
 
+            // https://stackoverflow.com/a/21436273/111794
+            CustomPopupPlacement[] popupPlacement(Size popupSize, Size targetSize, Point offset) =>
+                new[] {
+                    new CustomPopupPlacement() {
+                        Point = new Point(targetSize.Width - popupSize.Width, targetSize.Height)
+                    }
+                };
+
             Loaded += (s, e) => {
                 optionsLink.Click += (s, e) => optionsPopup.IsOpen = true;
+                aboutLink.Click += (s, e) => aboutPopup.IsOpen = true;
 
-                // https://stackoverflow.com/a/21436273/111794
-                optionsPopup.CustomPopupPlacementCallback += (popupSize, targetSize, offset) => {
-                    return new[] {
-                        new CustomPopupPlacement() {
-                            Point = new Point(targetSize.Width - popupSize.Width, targetSize.Height)
-                        }
-                    };
-                };
+                optionsPopup.CustomPopupPlacementCallback += popupPlacement;
+                aboutPopup.CustomPopupPlacementCallback += popupPlacement;
             };
 
         }

@@ -11,6 +11,7 @@ using static System.Environment;
 using Newtonsoft.Json;
 
 namespace Periscope {
+    [Obsolete("Use Persistence instead")]
     public static class ConfigProvider {
         public static string? ConfigFolder { get; private set; }
         public static void LoadConfigFolder(Type t) {

@@ -10,6 +10,7 @@ using Octokit;
 namespace Periscope {
     public class GithubProjectInfo : IProjectInfo {
         public GithubProjectInfo(string owner, string repo) {
+            ProjectUrl = $"https://github.com/{owner}/{repo}";
             FeedbackUrl = $"https://github.com/{owner}/{repo}/issues/new/choose";
             ReleaseUrl = $"https://github.com/{owner}/{repo}/releases";
             this.owner = owner;
@@ -18,6 +19,7 @@ namespace Periscope {
 
         public string FeedbackUrl { get; }
         public string ReleaseUrl { get; }
+        public string ProjectUrl { get; }
 
         private readonly string owner;
         private readonly string repo;
@@ -39,5 +41,6 @@ namespace Periscope {
                 return latestVersion;
             }
         }
+
     }
 }

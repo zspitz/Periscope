@@ -18,10 +18,11 @@ namespace Periscope {
 
         private IVisualizerObjectProvider? objectProvider;
         private TConfig? config;
-        private TConfig? settingsConfig;
 
-        public void Initialize(IVisualizerObjectProvider objectProvider, TConfig config) {
-            var modified = false;
+        public void Initialize(IVisualizerObjectProvider objectProvider, TConfig config) => Initialize(objectProvider, config, false);
+
+        private void Initialize(IVisualizerObjectProvider objectProvider, TConfig config, bool isConfigModified) {
+            var modified = isConfigModified;
             if (this.objectProvider != objectProvider) {
                 this.objectProvider = objectProvider;
                 modified = true;
@@ -38,16 +39,17 @@ namespace Periscope {
                 throw new InvalidOperationException("Unspecified error while serializing/deserializing");
             }
 
-            var (windowState, settingsState) = GetViewStates(response, openInNewWindow);
-            config = windowState.Config;
-            settingsConfig = settingsState.Config ?? config.Clone();
-            chrome.optionsPopup.DataContext = settingsState.DataContext;
-            DataContext = windowState.DataContext;
+            object windowContext;
+            object optionsContext;
+            (windowContext, optionsContext, config) = GetViewState(response, openInNewWindow);
 
-            ConfigProvider.Write(config, Visualizer.ConfigKey);
+            Persistence.Write(config, Visualizer.ConfigKey);
+
+            chrome.optionsPopup.DataContext = optionsContext;
+            DataContext = windowContext;
         }
 
-        protected abstract (ViewState<TConfig> window, ViewState<TConfig> settings) GetViewStates(object response, ICommand? OpenInNewWindow);
+        protected abstract (object windowContext, object optionsContext, TConfig config) GetViewState(object response, ICommand? OpenInNewWindow);
         protected abstract void TransformConfig(TConfig config, object parameter);
 
         private class _OpenInNewWindow : ICommand {
@@ -97,19 +99,35 @@ namespace Periscope {
             };
 
             Loaded += (s, e) => {
-                chrome.optionsPopup.Closed += (s, e) => {
-                    if (objectProvider is null) { throw new ArgumentNullException("Missing object provider"); }
-                    if (config is null) { throw new ArgumentNullException("Missing config"); }
-                    if (settingsConfig is null) { throw new ArgumentNullException("Missing settingsConfig"); }
+                TConfig? _baseline = null;
 
-                    if (settingsConfig.NeedsTransferData(config)) {
-                        Initialize(objectProvider, settingsConfig);
+                void popupOpenHandler(object s, EventArgs e) {
+                    if (config is null) { throw new ArgumentNullException(nameof(config)); }
+                    _baseline = config.Clone();
+                }
+
+                void popupClosedHandler(object s, EventArgs e) {
+                    if (objectProvider is null) { throw new ArgumentNullException(nameof(objectProvider)); }
+                    if (config is null) { throw new ArgumentNullException(nameof(config)); }
+                    if (_baseline is null) { throw new ArgumentNullException(nameof(_baseline)); }
+
+                    var configState = config.Diff(_baseline);
+                    if (configState.HasFlag(ConfigDiffStates.NeedsTransfer)) {
+                        Initialize(objectProvider, config, true);
+                    } else if (configState.HasFlag(ConfigDiffStates.NeedsWrite)) {
+                        Persistence.Write(config, Visualizer.ConfigKey);
                     }
-                };
+                    _baseline = null;
+                }
+
+                chrome.optionsPopup.Opened += popupOpenHandler;
+                chrome.optionsPopup.Closed += popupClosedHandler;
+                chrome.aboutPopup.Opened += popupOpenHandler;
+                chrome.aboutPopup.Closed += popupClosedHandler;
 
                 Unloaded += (s, e) => {
                     if (config is null) { return; }
-                    ConfigProvider.Write(config, Visualizer.ConfigKey);
+                    Persistence.Write(config, Visualizer.ConfigKey);
                 };
             };
         }
