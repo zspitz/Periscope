@@ -41,9 +41,9 @@ namespace Periscope {
 
             object windowContext;
             object optionsContext;
-            (windowContext, optionsContext, config) = GetViewState(response, openInNewWindow);
+            (windowContext, optionsContext, this.config) = GetViewState(response, openInNewWindow);
 
-            Persistence.Write(config, Visualizer.ConfigKey);
+            Persistence.Write(this.config, Visualizer.ConfigKey);
 
             chrome.optionsPopup.DataContext = optionsContext;
             DataContext = windowContext;
@@ -115,6 +115,7 @@ namespace Periscope {
                     if (configState.HasFlag(ConfigDiffStates.NeedsTransfer)) {
                         Initialize(objectProvider, config, true);
                     } else if (configState.HasFlag(ConfigDiffStates.NeedsWrite)) {
+                        // only "else if", because Iniitialize writes the config on its own
                         Persistence.Write(config, Visualizer.ConfigKey);
                     }
                     _baseline = null;
