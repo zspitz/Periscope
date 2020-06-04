@@ -12,7 +12,7 @@ This project provides a common framework for custom debugging visualizers for Vi
 * **CopyWatchExpression** command
 * Enables reuse of the same UI components outside of a visualizer
 * Persistence of window state between debug sessions; individual properties can be associated with generated key, such as the assembly name
-* Latest version checking
+* New version check, and subsequent notification of new versions. Can be initiated by the user, or opt-in automatically.
 
 with the following planned features:
 
