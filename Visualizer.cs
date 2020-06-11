@@ -9,12 +9,10 @@ using Periscope.Debuggee;
 using static System.IO.Path;
 using System.Linq;
 using System.Runtime.CompilerServices;
-using Octokit;
 using System.Diagnostics.CodeAnalysis;
-using System.Windows.Interop;
 
 namespace Periscope {
-    public class Visualizer : INotifyPropertyChanged {
+    public abstract class Visualizer : DialogDebuggerVisualizer, INotifyPropertyChanged {
         public static RelayCommand CopyWatchExpression = new RelayCommand(parameter => {
             if (!(parameter is string formatString)) { throw new ArgumentException("'parameter' is not a string."); }
 
@@ -24,24 +22,7 @@ namespace Periscope {
             Clipboard.SetText(string.Format(formatString, rootExpression));
         });
 
-        public static void Show<TWindow, TConfig>(Type referenceType, IVisualizerObjectProvider objectProvider, IProjectInfo? projectInfo = default)
-                where TWindow : VisualizerWindowBase<TWindow, TConfig>, new()
-                where TConfig : ConfigBase<TConfig> {
-
-            Current.Initialize(referenceType, projectInfo);
-
-            PresentationTraceSources.DataBindingSource.Listeners.Add(new DebugTraceListener());
-
-            ConfigKey = objectProvider.GetObject() as string ?? "";
-
-            var config = Persistence.Get<TConfig>(ConfigKey);
-
-            var window = new TWindow();
-            window.Initialize(objectProvider, config);
-            window.ShowDialog();
-        }
-
-        public readonly static Visualizer Current = new Visualizer();
+        public static Visualizer? Current { get; private set; }
 
         public event PropertyChangedEventHandler? PropertyChanged;
 
@@ -63,11 +44,11 @@ namespace Periscope {
             return rootExpression;
         }
 
-        private Version? version;
-        public Version? Version {
-            get => version;
-            private set => NotifyChanged(ref version, value);
-        }
+        public Version Version { get; }
+        public string Location { get; }
+        public string Filename { get; }
+        public string? Description { get; }
+
 
         private bool autoVersionCheck;
         public bool AutoVersionCheck {
@@ -94,53 +75,20 @@ namespace Periscope {
             private set => NotifyChanged(ref latestVersionString, value);
         }
 
-        private string? location;
-        public string? Location {
-            get => location;
-            private set => NotifyChanged(ref location, value);
-        }
-        private string? filename;
-        public string? Filename {
-            get => filename;
-            private set => NotifyChanged(ref filename, value);
-        }
-        private string? description;
-        public string? Description {
-            get => description;
-            private set => NotifyChanged(ref description, value);
-        }
 
-        /// <summary>URL strings bound to Hyperlink cannot be whtespace</summary>
-        private void NotifyUrlChange(ref string? current, string? newValue, [CallerMemberName] string? name = null) {
-            if (newValue.IsNullOrWhitespace()) { newValue = null; }
-            NotifyChanged(ref current, newValue, name);
-        }
+        public string? ProjectUrl { get; }
+        public string? FeedbackUrl { get; }
+        public string? ReleaseUrl { get; }
 
-        private string? projectUrl;
-        public string? ProjectUrl {
-            get => projectUrl;
-            private set => NotifyUrlChange(ref projectUrl, value);
-        }
+        public RelayCommand? LatestVersionCheck { get; }
 
-        private string? feedbackUrl;
-        public string? FeedbackUrl {
-            get => feedbackUrl;
-            private set => NotifyUrlChange(ref feedbackUrl, value);
-        }
-
-        private string? releaseUrl;
-        public string? ReleaseUrl {
-            get => releaseUrl;
-            private set => NotifyUrlChange(ref releaseUrl, value);
-        }
-
-        public RelayCommand? LatestVersionCheck { get; private set; }
-
-        public (string url, string args) UrlArgs => ("explorer.exe", $"/n /e,/select,\"{location}\"");
+        public (string url, string args) UrlArgs => ("explorer.exe", $"/n /e,/select,\"{Location}\"");
         public static string ConfigKey { get; set; } = "";
 
-        public void Initialize(Type t, IProjectInfo? projectInfo, string? description = null) {
-            // This requires an externally passed type, otherwise it'll return the Periscope DLL info
+        public Visualizer(IProjectInfo? projectInfo, string? description = null) {
+            Current = this;
+
+            var t = GetType();
             var asm = t.Assembly;
             Version = asm.GetName().Version;
             Location = asm.Location;
@@ -156,9 +104,11 @@ namespace Periscope {
             Persistence.SetFolder(Description);
 
             if (projectInfo is { }) {
-                ProjectUrl = projectInfo.ProjectUrl;
-                FeedbackUrl = projectInfo.FeedbackUrl;
-                ReleaseUrl = projectInfo.ReleaseUrl;
+                string? fixUrl(string? value) => value.IsNullOrWhitespace() ? null : value;
+
+                ProjectUrl = fixUrl(projectInfo.ProjectUrl);
+                FeedbackUrl = fixUrl(projectInfo.FeedbackUrl);
+                ReleaseUrl = fixUrl(projectInfo.ReleaseUrl);
 
                 if (Persistence.GetVersionCheckInfo() is VersionCheckInfo versionCheckInfo) {
                     (AutoVersionCheck, VersionCheckedOn, LatestVersion) = versionCheckInfo;
@@ -191,8 +141,8 @@ namespace Periscope {
                 };
 
                 if (AutoVersionCheck) {
-                    if (LatestVersionCheck.CanExecute("")) { 
-                        LatestVersionCheck.Execute(""); 
+                    if (LatestVersionCheck.CanExecute("")) {
+                        LatestVersionCheck.Execute("");
                     } else {
                         NotifyNewVersion();
                     }
