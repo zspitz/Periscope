@@ -5,7 +5,6 @@ using ZSpitz.Util;
 using ZSpitz.Util.Wpf;
 using System.Windows;
 using System.Diagnostics;
-using Periscope.Debuggee;
 using static System.IO.Path;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -75,7 +74,7 @@ namespace Periscope {
             private set => NotifyChanged(ref latestVersionString, value);
         }
 
-
+        public bool HasProjectUrl => new[] { ProjectUrl, FeedbackUrl, ReleaseUrl }.Any(x => !x.IsNullOrWhitespace());
         public string? ProjectUrl { get; }
         public string? FeedbackUrl { get; }
         public string? ReleaseUrl { get; }

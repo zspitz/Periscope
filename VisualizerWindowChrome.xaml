@@ -12,6 +12,7 @@
         <util:VisibilityConverter x:Key="NullVisibleConverter" MatchValue="{x:Null}" />
         <util:VisibilityConverter x:Key="FalseVisibleConverter" MatchValue="{StaticResource False}" />
         <util:MultiVisibilityConverter x:Key="MultiVisibilityConverter" />
+        <util:VisibilityConverter x:Key="TrueVisibleConverter" MatchValue="{StaticResource True}" />
     </DockPanel.Resources>
 
     <DockPanel DockPanel.Dock="Bottom" Margin="0,12,0,0" DataContext="{Binding Source={x:Static ps:Visualizer.Current}}">
@@ -32,7 +33,7 @@
                                     <Run Text="{Binding Filename, Mode=OneWay}" />
                                 </util:Hyperlink>
                             </TextBlock>
-                            <TextBlock HorizontalAlignment="Center">
+                            <TextBlock HorizontalAlignment="Center" Visibility="{Binding HasProjectUrl, Converter={StaticResource TrueVisibleConverter}}">
                                 <util:Hyperlink NavigateUri="{Binding ProjectUrl, TargetNullValue=''}">Project</util:Hyperlink>
                                 &#x00B7;
                                 <util:Hyperlink NavigateUri="{Binding ReleaseUrl, TargetNullValue=''}">Releases</util:Hyperlink>
@@ -51,28 +52,6 @@
                             <Button Command="{Binding LatestVersionCheck}" Content="Check for latest version" HorizontalAlignment="Center" />
                             <CheckBox IsChecked="{Binding AutoVersionCheck}" Content="Auto check for new version" HorizontalAlignment="Center" />
                         </StackPanel>
-                        <!--<util:AutoGrid ColumnCount="2">
-                            <TextBlock Text="Current version" />
-                            <TextBlock Text="{Binding Version}" />
-                            <TextBlock Text="Latest version" />
-                            <TextBlock Text="{Binding LatestVersionString}" />
-                            <CheckBox IsChecked="{Binding AutoVersionCheck}" Content="Auto check for new version" Grid.ColumnSpan="2" />
-                            <TextBlock Text="Last version check" />
-                            <TextBlock Text="{Binding VersionCheckedOn}" />
-                            <Button Grid.ColumnSpan="2" Command="{Binding LatestVersionCheck}" Content="Check for latest version" />
-                            <TextBlock Text="Location" />
-                            <TextBlock Grid.ColumnSpan="2" HorizontalAlignment="Center">
-                                <util:Hyperlink NavigateUri="{Binding Location}" CommandParameter="{Binding UrlArgs}">
-                                    <Run Text="{Binding Filename, Mode=OneWay}" />
-                                </util:Hyperlink>
-                            </TextBlock>
-                            <TextBlock>
-                                <util:Hyperlink NavigateUri="{Binding ProjectUrl, TargetNullValue=''}">Feedback</util:Hyperlink>
-                            </TextBlock>
-                            <TextBlock>
-                                <util:Hyperlink NavigateUri="{Binding FeedbackUrl, TargetNullValue=''}">Feedback</util:Hyperlink>
-                            </TextBlock>
-                        </util:AutoGrid>-->
                     </Border>
                 </Popup>
             </Hyperlink>
