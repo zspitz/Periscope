@@ -2,11 +2,11 @@
 using System;
 using System.Linq;
 using System.Windows;
-using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using System.Windows.Markup;
 using ZSpitz.Util.Wpf;
 using Periscope.Debuggee;
+using static Periscope.Debuggee.ConfigDiffStates;
 
 namespace Periscope {
     [ContentProperty("MainContent")]
@@ -14,7 +14,7 @@ namespace Periscope {
             where TWindow : VisualizerWindowBase<TWindow, TConfig>, new()
             where TConfig : ConfigBase<TConfig> {
 
-        private readonly VisualizerWindowChrome chrome; 
+        private VisualizerWindowChrome chrome = new VisualizerWindowChrome();
 
         private IVisualizerObjectProvider? objectProvider;
         private TConfig? config;
@@ -86,9 +86,6 @@ namespace Periscope {
 
             SizeToContent = SizeToContent.WidthAndHeight;
 
-            chrome = new VisualizerWindowChrome();
-            Content = chrome;
-
             // if we could find out which is the current monitor, that would be better
             var workingAreas = Monitor.AllMonitors.Select(x => x.WorkingArea).ToList();
             MaxWidth = workingAreas.Min(x => x.Width) * .90;
@@ -97,6 +94,10 @@ namespace Periscope {
             PreviewKeyDown += (s, e) => {
                 if (e.Key == Key.Escape) { Close(); }
             };
+
+            // we need to set this explicitly, otherwise the popup inherits the data context from the parent's DataContext, which points to Periscope.Visualizer.Current
+            chrome.optionsPopup.DataContext = null;
+            Content = chrome;
 
             Loaded += (s, e) => {
                 TConfig? _baseline = null;
@@ -112,11 +113,14 @@ namespace Periscope {
                     if (_baseline is null) { throw new ArgumentNullException(nameof(_baseline)); }
 
                     var configState = config.Diff(_baseline);
-                    if (configState.HasFlag(ConfigDiffStates.NeedsTransfer)) {
-                        Initialize(objectProvider, config, true);
-                    } else if (configState.HasFlag(ConfigDiffStates.NeedsWrite)) {
-                        // only "else if", because Iniitialize writes the config on its own
-                        Persistence.Write(config, Visualizer.ConfigKey);
+                    switch (configState) {
+                        case NeedsTransfer:
+                            Initialize(objectProvider, config, true);
+                            break;
+                        case NeedsWrite:
+                            // only "else if", because Iniitialize writes the config on its own
+                            Persistence.Write(config, Visualizer.ConfigKey);
+                            break;
                     }
                     _baseline = null;
                 }
