@@ -151,7 +151,12 @@ namespace Periscope {
 
         private void NotifyNewVersion() {
             if (LatestVersion <= Version) { return; }
-            string msg = $"There is a newer version available:\n\nCurrent: {Version}\n\nNewer: {LatestVersion}\n\nDo you want to open the releases page?";
+            var msg = $"There is a newer version available:\nCurrent: {Version}\nNewer: {LatestVersion}";
+            if (ReleaseUrl.IsNullOrWhitespace()) {
+                MessageBox.Show(msg);
+                return;
+            }
+            msg += "\nDo you want to open the releases page?";
             var result = MessageBox.Show(msg, "", MessageBoxButton.YesNo);
             if (result != MessageBoxResult.Yes) { return; }
             Commands.LaunchUrlOrFileCommand.Execute(ReleaseUrl);
