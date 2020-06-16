@@ -35,13 +35,25 @@ namespace Periscope {
 
             if (config is null || objectProvider is null) { return; }
             var response = objectProvider.TransferObject(config);
-            if (response is null) {
-                throw new InvalidOperationException("Unspecified error while serializing/deserializing");
+            object model;
+            switch (response) {
+                case Response r:
+                    if (r.ExceptionData is { }) {
+                        MessageBox.Show(r.ExceptionData.ToString(), "Debuggee-side exception:");
+                    }
+                    if (r.Model is null) { return; }
+                    model = r.Model;
+                    break;
+                case null:
+                    throw new InvalidOperationException("Unspecified error while serializing/deserializing");
+                default: // for the case when the specific project doesn't inherit VisualizerObjectSource
+                    model = response;
+                    break;
             }
 
             object windowContext;
             object optionsContext;
-            (windowContext, optionsContext, this.config) = GetViewState(response, openInNewWindow);
+            (windowContext, optionsContext, this.config) = GetViewState(model, openInNewWindow);
 
             Persistence.Write(this.config, Visualizer.ConfigKey);
 
