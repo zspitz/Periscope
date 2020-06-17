@@ -19,25 +19,29 @@ namespace Periscope {
 
         private IVisualizerObjectProvider? objectProvider;
         private TConfig? config;
+        private object? response;
 
-        public void Initialize(IVisualizerObjectProvider objectProvider, TConfig config) => Initialize(objectProvider, config, false);
+        public void Initialize(IVisualizerObjectProvider objectProvider, TConfig config) => Initialize(objectProvider, config, NoAction);
 
-        private void Initialize(IVisualizerObjectProvider objectProvider, TConfig config, bool isConfigModified) {
-            var modified = isConfigModified;
+        private void Initialize(IVisualizerObjectProvider objectProvider, TConfig config, ConfigDiffStates configDiffState) {
+            //var modified = isConfigModified;
             if (this.objectProvider != objectProvider) {
                 this.objectProvider = objectProvider;
-                modified = true;
+                configDiffState = NeedsTransfer;
             }
             if (this.config != config) {
                 this.config = config;
-                modified = true;
+                configDiffState = NeedsTransfer;
             }
-            if (!modified || config is null || objectProvider is null) { return; }
+            if (configDiffState == NoAction || config is null || objectProvider is null) { return; }
 
-            if (config is null || objectProvider is null) { return; }
-            var response = objectProvider.TransferObject(config);
-            if (response is null) {
-                throw new InvalidDataException("Null received from debuggee-side.");
+            if (configDiffState == NeedsTransfer) {
+                response = objectProvider.TransferObject(config);
+                if (response is null) {
+                    throw new InvalidDataException("Null received from debuggee-side.");
+                }
+            } else if (response is null) {
+                return;
             }
 
             object windowContext;
@@ -114,15 +118,7 @@ namespace Periscope {
                     if (_baseline is null) { throw new ArgumentNullException(nameof(_baseline)); }
 
                     var configState = config.Diff(_baseline);
-                    switch (configState) {
-                        case NeedsTransfer:
-                            Initialize(objectProvider, config, true);
-                            break;
-                        case NeedsWrite:
-                            // only "else if", because Iniitialize writes the config on its own
-                            Persistence.Write(config, Visualizer.ConfigKey);
-                            break;
-                    }
+                    Initialize(objectProvider, config, configState);
                     _baseline = null;
                 }
 

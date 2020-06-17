@@ -66,7 +66,7 @@
             </Hyperlink>
         </Label>
 
-        <Label Content="Expression" Padding="0,5,5,5" />
+        <Label Content="Expression:" Padding="0,5,5,5" />
         <TextBox Text="{Binding RootExpression}" MinWidth="50" />
 
     </DockPanel>
