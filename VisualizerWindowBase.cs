@@ -24,7 +24,6 @@ namespace Periscope {
         public void Initialize(IVisualizerObjectProvider objectProvider, TConfig config) => Initialize(objectProvider, config, NoAction);
 
         private void Initialize(IVisualizerObjectProvider objectProvider, TConfig config, ConfigDiffStates configDiffState) {
-            //var modified = isConfigModified;
             if (this.objectProvider != objectProvider) {
                 this.objectProvider = objectProvider;
                 configDiffState = NeedsTransfer;
@@ -39,8 +38,12 @@ namespace Periscope {
                 response = objectProvider.TransferObject(config);
                 if (response is null) {
                     throw new InvalidDataException("Null received from debuggee-side.");
+                } else if (response is ExceptionData exceptionData) {
+                    MessageBox.Show(exceptionData.ToString(), "Debuggee-side exception");
+                    Close();
                 }
             } else if (response is null) {
+                // TODO not sure how we'd get here
                 return;
             }
 
