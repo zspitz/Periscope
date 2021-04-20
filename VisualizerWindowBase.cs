@@ -15,7 +15,7 @@ namespace Periscope {
             where TWindow : VisualizerWindowBase<TWindow, TConfig>, new()
             where TConfig : ConfigBase<TConfig> {
 
-        private VisualizerWindowChrome chrome = new VisualizerWindowChrome();
+        private readonly VisualizerWindowChrome chrome = new VisualizerWindowChrome();
 
         private IVisualizerObjectProvider? objectProvider;
         private TConfig? config;
@@ -41,6 +41,7 @@ namespace Periscope {
                 } else if (response is ExceptionData exceptionData) {
                     MessageBox.Show(exceptionData.ToString(), "Debuggee-side exception");
                     Close();
+                    return;
                 }
             } else if (response is null) {
                 // TODO not sure how we'd get here
@@ -72,13 +73,15 @@ namespace Periscope {
                 window.TransformConfig(newConfig, parameter);
                 var newWindow = new TWindow();
                 newWindow.Initialize(window.objectProvider, newConfig);
-                newWindow.ShowDialog();
+                if (newWindow.IsOpen) {
+                    newWindow.ShowDialog();
+                }
             }
 
             public event EventHandler? CanExecuteChanged;
         }
 
-        private ICommand openInNewWindow;
+        private readonly ICommand openInNewWindow;
 
         public UIElement MainContent { 
             get => chrome.mainContent.Child;
@@ -106,6 +109,8 @@ namespace Periscope {
             // we need to set this explicitly, otherwise the popup inherits the data context from the parent's DataContext, which points to Periscope.Visualizer.Current
             chrome.optionsPopup.DataContext = null;
             Content = chrome;
+
+            Closed += (s,e) => isOpen = false;
 
             Loaded += (s, e) => {
                 TConfig? _baseline = null;
@@ -136,5 +141,9 @@ namespace Periscope {
                 };
             };
         }
+
+        private bool isOpen = true;
+        public bool IsOpen => isOpen;
+
     }
 }
