@@ -20,7 +20,9 @@ namespace Periscope {
 
             var window = new TWindow();
             window.Initialize(objectProvider, config);
-            window.ShowDialog();
+            if (window.IsOpen) {
+                window.ShowDialog();
+            }
         }
     }
 }

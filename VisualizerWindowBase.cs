@@ -41,6 +41,7 @@ namespace Periscope {
                 } else if (response is ExceptionData exceptionData) {
                     MessageBox.Show(exceptionData.ToString(), "Debuggee-side exception.");
                     Close();
+                    return;
                 }
             } else if (response is null) {
                 // TODO not sure how we'd get here
@@ -72,7 +73,9 @@ namespace Periscope {
                 window.TransformConfig(newConfig, parameter);
                 var newWindow = new TWindow();
                 newWindow.Initialize(window.objectProvider, newConfig);
-                newWindow.ShowDialog();
+                if (newWindow.IsOpen) {
+                    newWindow.ShowDialog();
+                }
             }
 
             public event EventHandler? CanExecuteChanged;
@@ -107,6 +110,8 @@ namespace Periscope {
             chrome.optionsPopup.DataContext = null;
             Content = chrome;
 
+            Closed += (s,e) => isOpen = false;
+
             Loaded += (s, e) => {
                 TConfig? _baseline = null;
 
@@ -136,5 +141,9 @@ namespace Periscope {
                 };
             };
         }
+
+        private bool isOpen = true;
+        public bool IsOpen => isOpen;
+
     }
 }

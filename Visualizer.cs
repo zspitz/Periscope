@@ -103,7 +103,7 @@ namespace Periscope {
             Persistence.SetFolder(Description);
 
             if (projectInfo is { }) {
-                string? fixUrl(string? value) => value.IsNullOrWhitespace() ? null : value;
+                static string? fixUrl(string? value) => value.IsNullOrWhitespace() ? null : value;
 
                 ProjectUrl = fixUrl(projectInfo.ProjectUrl);
                 FeedbackUrl = fixUrl(projectInfo.FeedbackUrl);
