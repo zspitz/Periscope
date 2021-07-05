@@ -15,7 +15,7 @@ namespace Periscope {
             where TWindow : VisualizerWindowBase<TWindow, TConfig>, new()
             where TConfig : ConfigBase<TConfig> {
 
-        private VisualizerWindowChrome chrome = new VisualizerWindowChrome();
+        private readonly VisualizerWindowChrome chrome = new();
 
         private IVisualizerObjectProvider? objectProvider;
         private TConfig? config;
@@ -39,7 +39,7 @@ namespace Periscope {
                 if (response is null) {
                     throw new InvalidDataException("Null received from debuggee-side.");
                 } else if (response is ExceptionData exceptionData) {
-                    MessageBox.Show(exceptionData.ToString(), "Debuggee-side exception");
+                    MessageBox.Show(exceptionData.ToString(), "Debuggee-side exception.");
                     Close();
                 }
             } else if (response is null) {
@@ -78,7 +78,7 @@ namespace Periscope {
             public event EventHandler? CanExecuteChanged;
         }
 
-        private ICommand openInNewWindow;
+        private readonly ICommand openInNewWindow;
 
         public UIElement MainContent { 
             get => chrome.mainContent.Child;
