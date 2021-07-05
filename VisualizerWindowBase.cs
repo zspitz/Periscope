@@ -110,7 +110,7 @@ namespace Periscope {
             chrome.optionsPopup.DataContext = null;
             Content = chrome;
 
-            Closed += (s,e) => isOpen = false;
+            Closed += (s,e) => IsOpen = false;
 
             Loaded += (s, e) => {
                 TConfig? _baseline = null;
@@ -142,8 +142,7 @@ namespace Periscope {
             };
         }
 
-        private bool isOpen = true;
-        public bool IsOpen => isOpen;
+        public bool IsOpen { get; private set; } = true;
 
     }
 }
