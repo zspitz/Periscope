@@ -7,11 +7,9 @@ namespace Periscope {
     public class ConfigContractResolver : DefaultContractResolver {
         private readonly bool keyedConfig;
         public ConfigContractResolver(bool keyedConfig = false) => this.keyedConfig = keyedConfig;
-        protected override JsonProperty CreateProperty(MemberInfo member, MemberSerialization memberSerialization) {
-            if (keyedConfig != member.HasAttribute<KeyedConfigPropertyAttribute>()) {
-                return null!;
-            }
-            return base.CreateProperty(member, memberSerialization);
-        }
+        protected override JsonProperty CreateProperty(MemberInfo member, MemberSerialization memberSerialization) =>
+            keyedConfig != member.HasAttribute<KeyedConfigPropertyAttribute>() ? 
+                null! : 
+                base.CreateProperty(member, memberSerialization);
     }
 }

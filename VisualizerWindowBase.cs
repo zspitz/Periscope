@@ -21,9 +21,9 @@ namespace Periscope {
         private TConfig? config;
         private object? response;
 
-        public void Initialize(IVisualizerObjectProvider objectProvider, TConfig config) => Initialize(objectProvider, config, NoAction);
+        public void Initialize(IVisualizerObjectProvider objectProvider, TConfig config) => initialize(objectProvider, config, NoAction);
 
-        private void Initialize(IVisualizerObjectProvider objectProvider, TConfig config, ConfigDiffStates configDiffState) {
+        private void initialize(IVisualizerObjectProvider objectProvider, TConfig config, ConfigDiffStates configDiffState) {
             if (this.objectProvider != objectProvider) {
                 this.objectProvider = objectProvider;
                 configDiffState = NeedsTransfer;
@@ -126,7 +126,7 @@ namespace Periscope {
                     if (_baseline is null) { throw new ArgumentNullException(nameof(_baseline)); }
 
                     var configState = config.Diff(_baseline);
-                    Initialize(objectProvider, config, configState);
+                    initialize(objectProvider, config, configState);
                     _baseline = null;
                 }
 
