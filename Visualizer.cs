@@ -12,8 +12,8 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace Periscope {
     public abstract class Visualizer : DialogDebuggerVisualizer, INotifyPropertyChanged {
-        public static RelayCommand CopyWatchExpression = new RelayCommand(parameter => {
-            if (!(parameter is string formatString)) { throw new ArgumentException("'parameter' is not a string."); }
+        public static RelayCommand CopyWatchExpression = new(parameter => {
+            if (parameter is not string formatString) { throw new ArgumentException("'parameter' is not a string."); }
 
             var rootExpression = Current?.GetRootExpression();
             if (rootExpression.IsNullOrWhitespace()) { return; }
@@ -25,15 +25,15 @@ namespace Periscope {
 
         public event PropertyChangedEventHandler? PropertyChanged;
 
-        private void NotifyChanged<T>(ref T current, T newValue, [CallerMemberName] string? name = null) =>
+        private void notifyChanged<T>(ref T current, T newValue, [CallerMemberName] string? name = null) =>
             this.NotifyChanged(ref current, newValue, PropertyChanged, name);
-        private void NotifyChanged(string name) =>
+        private void notifyChanged(string name) =>
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
 
         private string? rootExpression;
         public string? RootExpression {
             get => rootExpression;
-            set => NotifyChanged(ref rootExpression, value);
+            set => notifyChanged(ref rootExpression, value);
         }
 
         public string? GetRootExpression() {
@@ -52,26 +52,26 @@ namespace Periscope {
         private bool autoVersionCheck;
         public bool AutoVersionCheck {
             get => autoVersionCheck;
-            set => NotifyChanged(ref autoVersionCheck, value);
+            set => notifyChanged(ref autoVersionCheck, value);
         }
 
         private DateTime? versionCheckedOn;
         public DateTime? VersionCheckedOn {
             get => versionCheckedOn;
-            private set => NotifyChanged(ref versionCheckedOn, value);
+            private set => notifyChanged(ref versionCheckedOn, value);
         }
 
         private Version? latestVersion;
         public Version? LatestVersion {
             get => latestVersion;
-            private set => NotifyChanged(ref latestVersion, value);
+            private set => notifyChanged(ref latestVersion, value);
         }
 
         private string? latestVersionString = null;
         [AllowNull]
         public string LatestVersionString {
             get => latestVersionString ?? latestVersion?.ToString() ?? "Unknown";
-            private set => NotifyChanged(ref latestVersionString, value);
+            private set => notifyChanged(ref latestVersionString, value);
         }
 
         public bool HasProjectUrl => new[] { ProjectUrl, FeedbackUrl, ReleaseUrl }.Any(x => !x.IsNullOrWhitespace());
@@ -118,12 +118,12 @@ namespace Periscope {
                     LatestVersion = await projectInfo.GetLatestVersionAsync();
                     LatestVersionString = null;
                     VersionCheckedOn = DateTime.UtcNow;
-                    NotifyNewVersion();
+                    notifyNewVersion();
                 }, o =>
                     VersionCheckedOn is null ||
                     DateTime.UtcNow - VersionCheckedOn >= TimeSpan.FromHours(1)
                 );
-                NotifyChanged(nameof(LatestVersionCheck));
+                notifyChanged(nameof(LatestVersionCheck));
 
                 PropertyChanged += (s, e) => {
                     if (e.PropertyName.In(
@@ -143,13 +143,13 @@ namespace Periscope {
                     if (LatestVersionCheck.CanExecute("")) {
                         LatestVersionCheck.Execute("");
                     } else {
-                        NotifyNewVersion();
+                        notifyNewVersion();
                     }
                 }
             }
         }
 
-        private void NotifyNewVersion() {
+        private void notifyNewVersion() {
             if (LatestVersion <= Version) { return; }
             var msg = $"There is a newer version available:\nCurrent: {Version}\nNewer: {LatestVersion}";
             if (ReleaseUrl.IsNullOrWhitespace()) {

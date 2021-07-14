@@ -8,6 +8,7 @@ using ZSpitz.Util.Wpf;
 using Periscope.Debuggee;
 using static Periscope.Debuggee.ConfigDiffStates;
 using System.IO;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Periscope {
     [ContentProperty("MainContent")]
@@ -63,6 +64,7 @@ namespace Periscope {
         protected abstract (object windowContext, object optionsContext, TConfig config) GetViewState(object response, ICommand? OpenInNewWindow);
         protected abstract void TransformConfig(TConfig config, object parameter);
 
+        [SuppressMessage("Style", "IDE1006:Naming Styles")]
         private class _OpenInNewWindow : ICommand {
             private readonly TWindow window;
             public _OpenInNewWindow(TWindow window) => this.window = window;
@@ -80,7 +82,9 @@ namespace Periscope {
                 }
             }
 
+#pragma warning disable CS0067
             public event EventHandler? CanExecuteChanged;
+#pragma warning restore CS0067
         }
 
         private readonly ICommand openInNewWindow;

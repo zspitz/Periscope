@@ -22,14 +22,13 @@ namespace Periscope {
                     .Single();
             LoadConfigFolder(description);
         }
-        public static void LoadConfigFolder(string subfolderName) {
+        public static void LoadConfigFolder(string subfolderName) => 
             ConfigFolder = Combine(
                 GetFolderPath(SpecialFolder.LocalApplicationData),
                 subfolderName.Replace(" ", "")
             );
-        }
 
-        private static bool TryReadParseFile(string key, [NotNullWhen(true)] out JObject? data) {
+        private static bool tryReadParseFile(string key, [NotNullWhen(true)] out JObject? data) {
             data = null;
 
             var path = Combine(
@@ -59,7 +58,7 @@ namespace Periscope {
             var ret = new JObject();
 
             if (Directory.Exists(ConfigFolder)) {
-                if (TryReadParseFile("", out var globalConfig)) {
+                if (tryReadParseFile("", out var globalConfig)) {
                     if (globalConfig.TryGetValue("globals", out var globals)) {
                         ret.Merge(globals);
                     }
@@ -68,7 +67,7 @@ namespace Periscope {
                     }
                 }
 
-                if (!key.IsNullOrWhitespace() && TryReadParseFile(key, out var keyedConfig)) {
+                if (!key.IsNullOrWhitespace() && tryReadParseFile(key, out var keyedConfig)) {
                     ret.Merge(keyedConfig);
                 }
             }
