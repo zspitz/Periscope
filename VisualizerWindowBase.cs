@@ -48,6 +48,8 @@ namespace Periscope {
                 return;
             }
 
+            //configDiffState at this point could be either NeedsTransfer or NeedsWrite
+
             object windowContext;
             object optionsContext;
             (windowContext, optionsContext, this.config) = GetViewState(response, openInNewWindow);
