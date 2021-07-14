@@ -3,14 +3,12 @@ using static System.IO.Path;
 using static System.Environment;
 using System.Linq;
 using ZSpitz.Util;
-using System.Diagnostics;
 using Newtonsoft.Json.Linq;
 using System.IO;
 using System.Diagnostics.CodeAnalysis;
 using Periscope.Debuggee;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
-using System.Collections.Generic;
 
 namespace Periscope {
     public class VersionCheckInfo {

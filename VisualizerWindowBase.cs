@@ -19,18 +19,17 @@ namespace Periscope {
         private readonly VisualizerWindowChrome chrome = new();
 
         private IVisualizerObjectProvider? objectProvider;
-        private TConfig? config;
         private object? response;
 
+        public void Initialize(TConfig config) => initialize(objectProvider, config, NoAction);
         public void Initialize(IVisualizerObjectProvider objectProvider, TConfig config) => initialize(objectProvider, config, NoAction);
-
-        private void initialize(IVisualizerObjectProvider objectProvider, TConfig config, ConfigDiffStates configDiffState) {
+        private void initialize(IVisualizerObjectProvider? objectProvider, TConfig config, ConfigDiffStates configDiffState) {
             if (this.objectProvider != objectProvider) {
                 this.objectProvider = objectProvider;
                 configDiffState = NeedsTransfer;
             }
-            if (this.config != config) {
-                this.config = config;
+            if (Config != config) {
+                Config = config;
                 configDiffState = NeedsTransfer;
             }
             if (configDiffState == NoAction || config is null || objectProvider is null) { return; }
@@ -51,9 +50,9 @@ namespace Periscope {
 
             object windowContext;
             object optionsContext;
-            (windowContext, optionsContext, this.config) = GetViewState(response, openInNewWindow);
+            (windowContext, optionsContext, Config) = GetViewState(response, openInNewWindow);
 
-            Persistence.Write(this.config, Visualizer.ConfigKey);
+            Persistence.Write(Config, Visualizer.ConfigKey);
 
             chrome.optionsPopup.DataContext = optionsContext;
             DataContext = windowContext;
@@ -69,9 +68,9 @@ namespace Periscope {
             public bool CanExecute(object parameter) => true;
             public void Execute(object parameter) {
                 if (window.objectProvider is null) { throw new ArgumentNullException("Missing object provider"); }
-                if (window.config is null) { throw new ArgumentNullException("Missing config."); }
+                if (window.Config is null) { throw new ArgumentNullException("Missing config."); }
 
-                var newConfig = window.config.Clone();
+                var newConfig = window.Config.Clone();
                 window.TransformConfig(newConfig, parameter);
                 var newWindow = new TWindow();
                 newWindow.Initialize(window.objectProvider, newConfig);
@@ -120,17 +119,17 @@ namespace Periscope {
                 TConfig? _baseline = null;
 
                 void popupOpenHandler(object s, EventArgs e) {
-                    if (config is null) { throw new ArgumentNullException(nameof(config)); }
-                    _baseline = config.Clone();
+                    if (Config is null) { throw new ArgumentNullException(nameof(Config)); }
+                    _baseline = Config.Clone();
                 }
 
                 void popupClosedHandler(object s, EventArgs e) {
                     if (objectProvider is null) { throw new ArgumentNullException(nameof(objectProvider)); }
-                    if (config is null) { throw new ArgumentNullException(nameof(config)); }
+                    if (Config is null) { throw new ArgumentNullException(nameof(Config)); }
                     if (_baseline is null) { throw new ArgumentNullException(nameof(_baseline)); }
 
-                    var configState = config.Diff(_baseline);
-                    initialize(objectProvider, config, configState);
+                    var configState = Config.Diff(_baseline);
+                    initialize(objectProvider, Config, configState);
                     _baseline = null;
                 }
 
@@ -140,13 +139,13 @@ namespace Periscope {
                 chrome.aboutPopup.Closed += popupClosedHandler;
 
                 Unloaded += (s, e) => {
-                    if (config is null) { return; }
-                    Persistence.Write(config, Visualizer.ConfigKey);
+                    if (Config is null) { return; }
+                    Persistence.Write(Config, Visualizer.ConfigKey);
                 };
             };
         }
 
         public bool IsOpen { get; private set; } = true;
-
+        protected TConfig? Config { get; private set; }
     }
 }
