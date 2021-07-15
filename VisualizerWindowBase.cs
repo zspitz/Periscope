@@ -12,7 +12,7 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace Periscope {
     [ContentProperty("MainContent")]
-    public abstract class VisualizerWindowBase<TWindow, TConfig> : Window 
+    public abstract class VisualizerWindowBase<TWindow, TConfig> : Window
             where TWindow : VisualizerWindowBase<TWindow, TConfig>, new()
             where TConfig : ConfigBase<TConfig> {
 
@@ -78,6 +78,7 @@ namespace Periscope {
                 newWindow.Initialize(window.objectProvider, newConfig);
                 if (newWindow.IsOpen) {
                     newWindow.ShowDialog();
+                    window.persistConfig();
                 }
             }
 
@@ -88,13 +89,13 @@ namespace Periscope {
 
         private readonly ICommand openInNewWindow;
 
-        public UIElement MainContent { 
+        public UIElement MainContent {
             get => chrome.mainContent.Child;
-            set => chrome.mainContent.Child = value; 
+            set => chrome.mainContent.Child = value;
         }
         public UIElement OptionsPopup {
             get => chrome.optionsBorder.Child;
-            set => chrome.optionsBorder.Child = value; 
+            set => chrome.optionsBorder.Child = value;
         }
 
         public VisualizerWindowBase() {
@@ -107,7 +108,7 @@ namespace Periscope {
             MaxWidth = workingAreas.Min(x => x.Width) * .90;
             MaxHeight = workingAreas.Min(x => x.Height) * .90;
 
-            PreviewKeyDown += (s, e) => {
+            PreviewKeyDown += (_, e) => {
                 if (e.Key == Key.Escape) { Close(); }
             };
 
@@ -115,9 +116,9 @@ namespace Periscope {
             chrome.optionsPopup.DataContext = null;
             Content = chrome;
 
-            Closed += (s,e) => IsOpen = false;
+            Closed += (_, _) => IsOpen = false;
 
-            Loaded += (s, e) => {
+            Loaded += (_, _) => {
                 TConfig? _baseline = null;
 
                 void popupOpenHandler(object s, EventArgs e) {
@@ -140,11 +141,13 @@ namespace Periscope {
                 chrome.aboutPopup.Opened += popupOpenHandler;
                 chrome.aboutPopup.Closed += popupClosedHandler;
 
-                Unloaded += (s, e) => {
-                    if (Config is null) { return; }
-                    Persistence.Write(Config, Visualizer.ConfigKey);
-                };
+                Unloaded += (_, _) => persistConfig();
             };
+        }
+
+        void persistConfig() {
+            if (Config is null) { return; }
+            Persistence.Write(Config, Visualizer.ConfigKey);
         }
 
         public bool IsOpen { get; private set; } = true;
