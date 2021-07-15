@@ -4,8 +4,6 @@ using System.Windows;
 
 namespace Periscope {
     public partial class ExpressionRootPrompt {
-        public string? Expression { get; private set; }
-
         public ExpressionRootPrompt() {
             InitializeComponent();
 
