@@ -23,6 +23,8 @@ namespace Periscope {
             if (window.IsOpen) {
                 window.ShowDialog();
             }
+
+            // test comment
         }
     }
 }
