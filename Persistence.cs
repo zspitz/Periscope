@@ -49,7 +49,7 @@ namespace Periscope {
             try {
                 data = JObject.Parse(fileText);
             } catch { }
-            return !(data is null);
+            return data is not null;
         }
 
         // config data is stored in two files: global config (".json"), and keyed files
